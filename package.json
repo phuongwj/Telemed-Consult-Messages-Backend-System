@@ -1,0 +1,11 @@
+{
+  "name": "telemed-consult-messages-backend-system",
+  "version": "1.0.0",
+  "description": "RESTful API with Node.js, Express.js, and PostgreSQL",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}
