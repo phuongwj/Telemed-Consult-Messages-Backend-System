@@ -1,12 +1,9 @@
 import express from "express";
-import { addMessage, retrieveMessage } from "../controllers/messageController.js";
+import { addMessage, getAllMessages } from "../controllers/messageController.js";
 
 const router = express.Router();
 
 router.post('/addMessage', addMessage);
-
-/**
- * router.get('/.../', call retrieveMessage function)
- */
+router.get('/getAllMessages', getAllMessages);
 
 export default router;

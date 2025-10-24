@@ -1,6 +1,6 @@
 import pool from "../databases/postgres.js";
 
-/* Adding Message Endpoint */
+/* Adding Message to a Consultation Endpoint */
 export const addMessage = async (request, response) => {
     const { userId, consultationId, messageContent } = request.body;
 
@@ -37,9 +37,9 @@ export const addMessage = async (request, response) => {
     }
 }  
 
-/* Retrieving Messages Endpoint */
-export const retrieveMessage = async (request, response) => {
-    const { messages, authorRole } = request.body;
+/* Retrieving All Messages for A Specific Consultation Endpoint */
+export const getAllMessages = async (request, response) => {
+    const { consultationId, authorRole } = request.body;
 
     pool.query();
 }
