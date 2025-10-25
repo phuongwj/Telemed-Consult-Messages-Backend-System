@@ -7,7 +7,7 @@ export const addMessage = async (request, response) => {
     const insertMessageSql = `
         INSERT INTO message (user_id, consultation_id, message_content)
         VALUES ($1, $2, $3)
-        RETURNING user_id, consultation_id, message_content, time_sent
+        RETURNING user_id, consultation_id, message_content, time_sent;
     `;
 
     const userSql = `
@@ -31,7 +31,7 @@ export const addMessage = async (request, response) => {
             timestamp: insertedMessageRow.time_sent
         }
 
-        response.status(201).send(responseObj);
+        response.status(201).send(JSON.stringify(responseObj));
     } catch (error) {
         console.error(`Error occured: ${error}`);
     }
@@ -39,7 +39,17 @@ export const addMessage = async (request, response) => {
 
 /* Retrieving All Messages for A Specific Consultation Endpoint */
 export const getAllMessages = async (request, response) => {
-    const { consultationId, authorRole } = request.body;
+    const { consultationId, authorRole } = request.query;
+
+    const getAllMessagesForAConsultationSql = `
+        SELECT * 
+        FROM message
+        WHERE consultation_id = $1;
+    `;
+
+    const getAllMessagesByRoleSql = `
+
+    `;
 
     pool.query();
 }
