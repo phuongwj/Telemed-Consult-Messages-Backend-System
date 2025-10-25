@@ -34,6 +34,8 @@ export const addMessage = async (request, response) => {
         response.status(201).send(JSON.stringify(responseObj));
     } catch (error) {
         console.error(`Error for adding messages occured: ${error}`);
+        
+        response.status(500).send("Internal Server Error");
     }
 }  
 
@@ -71,5 +73,7 @@ export const getConsultationMessages = async (request, response) => {
         
     } catch (error) {
         console.error(`Error for getting messages occured: ${error}`);
+
+        response.status(500).send("Internal Server Error");
     }
 }
