@@ -14,10 +14,6 @@ app.use(
 
 app.use(router);
 
-app.get('/', (request, response) => {
-    response.json({ info: 'Node.js, Express.js, and Postgres API' })
-})
-
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
 })
