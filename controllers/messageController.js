@@ -44,6 +44,7 @@ export const getConsultationMessages = async (request, response) => {
     const getAllMessagesSql = `
         SELECT * 
         FROM message
+        JOIN consult_user ON message.user_id = consult_user.user_id
         WHERE consultation_id = $1;
     `;
 
@@ -64,7 +65,7 @@ export const getConsultationMessages = async (request, response) => {
         } else if (consultationId !== undefined) {
             const allMessagesResult = await pool.query(getAllMessagesSql, [consultationId]);
             const allMessagesRows = allMessagesResult.rows;
-            
+
             response.status(200).send(JSON.stringify(allMessagesRows));
         }
         
