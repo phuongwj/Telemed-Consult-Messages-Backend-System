@@ -204,3 +204,6 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 ### Technology Choices:
 
 ## Production Readiness Plan
+
+## Reflection
+> If time permits...
