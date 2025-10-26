@@ -1,5 +1,7 @@
 # Backend Message Storage System for Telemedicine Consultations
 
+A Backend System to store and retrieve messages from telemedicine consultations between patients and doctors.
+
 Table of Contents:
 - [Setup Instructions](#setup-instructions)
 - [Sample Data](#sample-data)
@@ -17,7 +19,124 @@ Table of Contents:
 
 
 ## Setup Instructions
+
+### 1. Clone the repository
+
+Download a copy of the project to your computer
+```bash
+git clone https://github.com/phuongwj/Telemed-Consult-Messages-Backend-System.git
+cd Telemed-Consult-Messages-Backend-System
+```
+
+### 2. Install Docker if you don't have it yet
+
+**Installation Guide:** https://docs.docker.com/get-started/get-docker/
+
+Once Docker is installed, choose one of the following options to run the project locally:
+- [Option 1: Using Terminal or Command Line](#option-1-build-and-run-with-docker-compose-using-terminal-or-command-line)
+- [Option 2: Using `docker-compose.yaml`](#option-2-using-docker-composeyaml)
+
+    ### Option 1: Build and Run with Docker Compose using Terminal or Command Line
+
+    #### Step 1: Verify Docker Installation
     
+    This will display the installed Docker version. If you see a version number, Docker is installed correctly.
+
+    ```bash
+    docker -v
+    ```
+
+    #### Step 2: Build the Docker Images
+
+    Reads the `docker-compose.yaml` file to download project dependencies and prepares the database with initial seed data.
+
+    ```
+    docker compose build
+    ```
+
+    #### Step 3: Start the Services
+
+    Launche both services (express server and postgresql database) from the `docker-compose.yaml` file
+
+    ```
+    docker compose up
+    ```
+
+    #### Step 4: Verify Containers are Running
+
+    Check that both containers (preseeded-postgres-db and express app) started sucessfully.
+
+    ```
+    docker ps
+    ```
+
+    And you should see something quite similar like the following:
+
+    | CONTAINER ID | IMAGE | COMMAND | CREATED | STATUS| PORTS| NAMES |
+    |---------------|----------------------------------------------------|---------------------------|------------------|--------------|-----------------------------------------------|------------------------|
+    | 6c341f37e6c2  | telemed-consult-messages-backend-system-backend    | "docker-entrypoint.s…"    | 17 seconds ago   | Up 5 seconds | 0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   | express-app            |
+    | 2220187be40e  | telemed-consult-messages-backend-system-database   | "docker-entrypoint.s…"    | 18 seconds ago   | Up 6 seconds | 0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   | preseeded-postgres-db  |
+
+
+    #### Step 5: Stop the Containers
+
+    If you want to stop running the containers
+
+    ```
+    docker compose down
+    ```
+
+    ### Option 2: Using `docker-compose.yaml`
+
+    1. Open the fil named `docker-compose.yaml` in your code editor.
+    2. Look for **Run All Services** button at the top of the `services:` section.
+    3. Click that button to build and start both containers automatically.
+
+    **Note:** This option will provide the same result as Option 1, but much simpler.
+
+### 3. Couple of Notes for Managing Your Local Database
+
+**Important:** The seeded database is stored on your computer's local storage using Docker volumes. If you make any changes
+(e.g. adding a message to a consultation), the change will persist between container restarts.
+
+#### When you need a Fresh Database
+
+If you want to reset the database back to its original seeded state:
+
+**Step 1:** Check existing Docker volumes
+
+This will list all Docker volumes on your system. You should see one named `telemed-consult-messages-backend-system_postgres-db` - this is where your database data lives.
+
+```
+docker volume ls
+```
+
+**Step 2:** Stop the running containers
+
+```
+docker compose down
+```
+
+Alternatively in Docker Desktop, click the **Stop** button for the container named **telemed-consult-messages-backend-system**.
+
+**Step 3:** Delete the database volume
+
+This will completely removes the stored database data from your computer.
+
+```
+docker volume rm telemed-consult-messages-backend-system_postgres-db
+```
+
+**Step 4:** Rebuild and restart
+
+```
+docker compose build
+docker compose up
+```
+
+Alternatively, click **Run All Services** inside `docker-compose.yaml` in your editor.
+
+
 
 ## Sample Data
 
@@ -28,6 +147,8 @@ Consultation 1: Patient 4 with Doctor 2
 Consultation 2: Patent 3 and Doctor 1
 - 10 messages back and forth about knee procedure.
 ```
+
+
 
 ## API Endpoints Documentation 
 
