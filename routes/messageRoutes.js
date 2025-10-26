@@ -3,7 +3,7 @@ import { addMessage, getConsultationMessages } from "../controllers/messageContr
 
 const router = express.Router();
 
-router.post('/addMessage', addMessage);
-router.get('/getConsultationMessages', getConsultationMessages);
+router.post('/api/addMessage', addMessage);
+router.get('/api/getConsultationMessages', getConsultationMessages);
 
 export default router;

@@ -4,10 +4,14 @@ import pool from "../databases/postgres.js";
 export const addMessage = async (request, response) => {
     const { userId, consultationId, messageContent } = request.body;
 
-    const insertMessageSql = `
-        INSERT INTO message (user_id, consultation_id, message_content)
-        VALUES ($1, $2, $3)
-        RETURNING user_id, consultation_id, message_content, time_sent;
+    if (userId === undefined || consultationId === undefined || messageContent === undefined) {
+        return response.status(400).send("Missing required field(s) for adding a message.");
+    }
+
+    const getConsultationId = `
+        SELECT consultation_id
+        FROM consultation
+        WHERE consultation_id = $1;
     `;
 
     const userSql = `
@@ -16,12 +20,26 @@ export const addMessage = async (request, response) => {
         WHERE consult_user.user_id = $1;
     `;
 
+    const insertMessageSql = `
+        INSERT INTO message (user_id, consultation_id, message_content)
+        VALUES ($1, $2, $3)
+        RETURNING user_id, consultation_id, message_content, time_sent;
+    `;
+
     try {
+        const userResult = await pool.query(userSql, [userId]);
+        if (userResult.rows.length == 0) {
+            return response.status(404).send("Error adding a message, user not found");
+        }
+        const userRow = userResult.rows[0];
+
+        const consultationResult = await pool.query(getConsultationId, [consultationId]);
+        if (consultationResult.rows.length === 0) {
+            return response.status(404).send("Error adding a message, Consultation ID not found");
+        }
+
         const insertMessageResult = await pool.query(insertMessageSql, [userId, consultationId, messageContent]);
         const insertedMessageRow = insertMessageResult.rows[0];
-
-        const userResult = await pool.query(userSql, [insertedMessageRow.user_id]);
-        const userRow = userResult.rows[0];
 
         const responseObj = {
             consultation_id: insertedMessageRow.consultation_id,
@@ -31,17 +49,23 @@ export const addMessage = async (request, response) => {
             timestamp: insertedMessageRow.time_sent
         }
 
-        response.status(201).send(JSON.stringify(responseObj));
+        return response.status(201).send(JSON.stringify(responseObj));
     } catch (error) {
-        console.error(`Error for adding messages occured: ${error}`);
+        console.error(`Error adding a message: ${error}`);
         
-        response.status(500).send("Internal Server Error");
+        return response.status(500).send("Internal Server Error");
     }
 }  
 
 /* Retrieving All Messages for A Specific Consultation Endpoint */
 export const getConsultationMessages = async (request, response) => {
-    const { consultationId, authorRole } = request.query;
+    let { consultationId, authorRole } = request.query;
+
+    const getConsultationId = `
+        SELECT consultation_id
+        FROM consultation
+        WHERE consultation_id = $1;
+    `;
 
     const getAllMessagesSql = `
         SELECT * 
@@ -55,25 +79,36 @@ export const getConsultationMessages = async (request, response) => {
         FROM message
         JOIN consult_user ON message.user_id = consult_user.user_id 
         WHERE message.consultation_id = $1 AND consult_user.user_role = $2;
-    `;
+    `;    
 
     try {
 
-        if (consultationId !== undefined && authorRole !== undefined) {
+        /* Parsing the Query Parameter consultationId String to a number, with a radix 10 to increase strictness */
+        consultationId = parseInt(consultationId, 10);
+        if (isNaN(consultationId)) {
+            return response.status(400).send("Missing required field for getting all messages.");
+        } 
+        
+        const consultationResult = await pool.query(getConsultationId, [consultationId]);
+        if (consultationResult.rows.length === 0) {
+            return response.status(404).send("Error for getting all messages, Consultation ID not found.");
+        }
+
+        if (authorRole !== undefined && (authorRole === 'Doctor' || authorRole === 'Patient')) {
             const allMessagesByRoleResult = await pool.query(getAllMessagesByRoleSql, [consultationId, authorRole]);
             const allMessagesByRoleRows = allMessagesByRoleResult.rows;
 
-            response.status(200).send(JSON.stringify(allMessagesByRoleRows));
-        } else if (consultationId !== undefined) {
+            return response.status(200).send(JSON.stringify(allMessagesByRoleRows));
+        } else {
             const allMessagesResult = await pool.query(getAllMessagesSql, [consultationId]);
             const allMessagesRows = allMessagesResult.rows;
 
-            response.status(200).send(JSON.stringify(allMessagesRows));
+            return response.status(200).send(JSON.stringify(allMessagesRows));
         }
         
     } catch (error) {
-        console.error(`Error for getting messages occured: ${error}`);
+        console.error(`Error getting all messages: ${error}`);
 
-        response.status(500).send("Internal Server Error");
+        return response.status(500).send("Internal Server Error");
     }
 }
