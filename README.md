@@ -4,7 +4,7 @@
 
 ## Sample Data
 
-## API Documentation 
+## API Endpoints Documentation 
 
 This documentation provides the information needed to use the API with any HTTP client (cURL, Postman, etc.). Examples show
 the raw HTTP request format.
