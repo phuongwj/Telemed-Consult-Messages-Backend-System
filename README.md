@@ -1,8 +1,33 @@
 # Backend Message Storage System for Telemedicine Consultations
 
+Table of Contents:
+- [Setup Instructions](#setup-instructions)
+- [Sample Data](#sample-data)
+- [API Endpoints Documentation](#api-endpoints-documentation)
+    + [Add a Message to a Consultation](#add-a-message-to-a-consultation)
+    + [Get All Messages for a Consultation](#get-all-messages-for-a-consultation)
+
+- [Architecture Decisions](#architecture-decisions)
+    + [Data Model](#data-model)
+    + [Technology Choices](#technology-choices)
+    + [Production Readiness Plan](#production-readiness-plan)
+
+
+- [Reflection](#reflection)
+
+
 ## Setup Instructions
+    
 
 ## Sample Data
+
+```
+Consultation 1: Patient 4 with Doctor 2
+- 5 messages back and forth about side effects from the new medication.
+
+Consultation 2: Patent 3 and Doctor 1
+- 10 messages back and forth about knee procedure.
+```
 
 ## API Endpoints Documentation 
 

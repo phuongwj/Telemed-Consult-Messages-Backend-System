@@ -2,8 +2,8 @@
   "name": "telemed-consult-messages-backend-system",
   "version": "1.0.0",
   "description": "RESTful API with Node.js, Express.js, and PostgreSQL",
-  "main": "index.js",
-  "license": "MIT",
+  "main": "server.js",
+  "type": "module",
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
