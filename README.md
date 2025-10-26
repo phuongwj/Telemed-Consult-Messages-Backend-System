@@ -40,7 +40,7 @@ Content-Type: application/json
 {
     "userId": 4,
     "consultationId": 1,
-    "messageContent": "Hey doc, I already took the medications you gave me, but the symptoms are still coming back."
+    "messageContent": "Hey Doc, the side effects have been persisting for more than two days. What should I do?"
 }
 ```
 
@@ -56,7 +56,7 @@ Returns the newly created message with timestamp and author details in JSON.
     "consultation_id": 1,
     "author": "David Wang",
     "author_role": "Patient",
-    "message_content": "Hey doc, I already took the medications you gave me, but the symptomps are still coming back.",
+    "message_content": "Hey Doc, the side effects have been persisting for more than two days. What should I do?",
     "timestamp": "2025-10-25T02:49:32.940Z"
 }
 ```
@@ -102,7 +102,7 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1
 [
     {
         "message_id": 1,
-        "message_content": "Hi, I'm experiencing some side effects form the new medication",
+        "message_content": "Hi, I'm experiencing some side effects from the new medication",
         "time_sent": "2025-10-25T14:30:36.200Z",
         "user_id": 4,
         "consultation_id": 1,
@@ -160,7 +160,7 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 [
     {
         "message_id": 1,
-        "message_content": "Hi, I'm experiencing some side effects form the new medication",
+        "message_content": "Hi, I'm experiencing some side effects from the new medication",
         "time_sent": "2025-10-25T14:30:36.200Z",
         "user_id": 4,
         "consultation_id": 1,
