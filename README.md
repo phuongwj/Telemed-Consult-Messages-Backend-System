@@ -152,11 +152,14 @@ Consultation 2: Patent 3 and Doctor 1
 
 ## API Endpoints Documentation 
 
+Please make sure Docker is running before testing the API Enpoints. I personally would prefer testing the API Endpoints with 
+Postman, since it's quite easy to get started with because of their UI, and also because I can see the responses more clearly.
+
 This documentation provides the information needed to use the API with any HTTP client (cURL, Postman, etc.). Examples show
 the raw HTTP request format.
 
 - [Add a Message to a Consultation](#add-a-message-to-a-consultation)
-- [Get All messages for a Consultation](#get-all-messages-for-a-consultation)
+- [Get All Messages for a Consultation](#get-all-messages-for-a-consultation)
 
 ### Add a Message to a Consultation 
 
@@ -346,8 +349,6 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 ## Architecture Decisions
 
 ### Data Model:
-
-### Technology Choices:
 
 ## Production Readiness Plan
 
