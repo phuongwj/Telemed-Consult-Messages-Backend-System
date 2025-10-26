@@ -32,7 +32,7 @@ Content-Type: application/json
 | Parameter       | Type    | Required | Description                         |
 | --------------- | ------- |--------- | ----------------------------------- |
 | userId          | number  | Yes      | ID of the user sending the message  |
-| consultationId  | number  | Yes      | Id of the consultation              |
+| consultationId  | number  | Yes      | ID of the consultation              |
 | messageContent  | string  | Yes      | Content of the message              |
 
 #### Request Body Example
