@@ -67,12 +67,13 @@ Once Docker is installed, make sure you have the Docker Desktop app opened, then
     After running the command above, your terminal should look like this, which indicates a success in having the instance
     of the PostgreSQL database be seeded, as well as up and running. 
 
-    ```
+    ```bash
+    preseeded-postgres-db  | date and time here [1] LOG:  database system is ready to accept connections
     ```
 
     #### Step 4: Verify Containers are Running
 
-    Open a separate terminal to check that both containers (preseeded-postgres-db and express app) started sucessfully.
+    Open a separate terminal to check that both containers (preseeded-postgres-db and express app) started successfully.
 
     ```
     docker ps
@@ -160,7 +161,7 @@ Consultation 2: Patent 3 and Doctor 1
 
 ## API Endpoints Documentation 
 
-Please make sure Docker is running before testing the API Enpoints. I personally would prefer testing the API Endpoints with 
+Please make sure Docker is running before testing the API Endpoints. I personally would prefer testing the API Endpoints with 
 Postman, since it's quite easy to get started with because of their UI, and also because I can see the responses more clearly.
 
 You could install Postman and sign up for an account
@@ -364,7 +365,7 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
 - *What fields did you include and why?*
 
-    Upon reading the required functionalities around storing and retrieving messages. I indentified the key nouns mentioned:
+    Upon reading the required functionalities around storing and retrieving messages. I identified the key nouns mentioned:
     - consultation
     - messages
     - user
@@ -395,12 +396,12 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 - *How did you model the relationship between consultations and messages?*
 
     I first observed that a message belongs to a consultation, so I was thinking maybe we should have the `message.message_id` as a foreign key inside 
-    the `consultation` table. However, I quickly realized that there could only be unique consultation ids, and that the consultation table would have to store an array of message ids of some sort, which is unsupported in my database and not very practical either, because what if in a consultation, we have hundreds or thousands of messages exchanged, that would cause a lot of issues. Therefore, I came up with a solution for this 
-    one-to-many (consultation to many messages) relationship, that is to go the other way around, we would store the `consultation_id` as a foreign key inside the `message` table, therefore mapping each message to its' own consultation. 
+    the `consultation` table. However, I quickly realized that there could only be unique consultation IDs, and that the consultation table would have to store an array of message IDs of some sort, which is unsupported in my database and not very practical either, because what if in a consultation, we have hundreds or thousands of messages exchanged - that would cause a lot of issues. Therefore, I came up with a solution for this 
+    one-to-many (consultation to many messages) relationship, that is to go the other way around, we would store the `consultation_id` as a foreign key inside the `message` table, therefore mapping each message to its own consultation. 
 
 - *What would you index if this were a real database?*
 
-    In my current database, which is only intended for local development purposes and not production code, I did think about why we would index, and if we do index, which column to index, since one of the the challenge statements for the `GET` endpoint was to filter by author role. Indexes are beneficial for performance purposes but if we don't index the right column, it will cost performance way more. Becauase if we are writing something to the table, say `INSERT` or `UPDATE` statements, and the column that we indexed on is something that gets changed often, then we not only have to update the table rows, but also the indexed column. Therefore making it even slower when we're just trying to READ something.
+    In my current database, which is only intended for local development purposes and not production code, I did think about why we would index, and if we do index, which column to index, since one of the the challenge statements for the `GET` endpoint was to filter by author role. Indexes are beneficial for performance purposes but if we don't index the right column, it will cost performance way more. Because if we are writing something to the table, say `INSERT` or `UPDATE` statements, and the column that we indexed on is something that gets changed often, then we not only have to update the table rows, but also the indexed column. Therefore making it even slower when we're just trying to READ something.
 
     And therefore, it's generally better to index on a column that won't be used for writing operations. I chose to index on the `user_id` column of the `message` table, since it's generally good to index foreign keys of a child table (where those keys are primary keys in the parent table), and also because we would have to **retrieve all messages of a consultation with the optional choice of filtering by author role**, we would often have to do `JOIN` statements, by having the index, it will ultimately give us a faster performance.
 
