@@ -369,10 +369,9 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
     - messages
     - user
 
-    With these information so far, I have been able to determine 3 entities (i.e. tables) - `consultation`, `message`, and `consult_user`.
+    With these information so far, I have been able to determine 3 entities (i.e. tables) - `consultation`, `message`, and `consult_user`. 
 
-    According to the **Required Functionality**, we must be able to identify who sent the message, and their role in the consultation
-    because a consultation comprises either a doctor or a patient. With this information, I decided on 3 attributes for the 
+    According to the **Required Functionality**, we must be able to identify who sent the message, and their role in the consultation, because a consultation comprises either a doctor or a patient. With this information, I decided on 3 attributes for the 
     `consult_user` entity - `user_id`, `user_full_name`, and `user_role`. I believe that having 1 entity is enough instead of splitting out 
     doctor or patient entity, since the `user_role` in the entity will determine whether the person is a Doctor or a Patient.
 
@@ -387,9 +386,9 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
     - A message is received by 1 receiver (either Patient or Doctor, depending on who sent first).
 
     Based on that observation, I identified that we need the following attributes for the `message` entity:
-    - `message_id`: This is a primary key, and each message has to have their own unique id as there could be a lot of messages with the same contents.
-    - `consultation.consultation_id`: This is a foreign key from the primary key of the `consultation_id` (More explanation to this is below).
-    - `consult_user.user_id`: The message is associated to a user, therefore it'd be best to have the foreign key from the primary key `consultation_id` here to later identify which of the messages are from Doctor or Patient of a consultation.
+    - `message_id`: This is a primary key, and each message has to have their own unique ID as there could be a lot of messages with the same contents.
+    - `consultation.consultation_id`: This is a foreign key from the primary key of the `consultation_id` (More explanation on this below).
+    - `consult_user.user_id`: The message is associated to a user, therefore it'd be best to have the foreign key from the primary key `user_id` here to later identify which of the messages are from Doctor or Patient of a consultation.
     - `message_content`: If we want to send a message, we obviously want to include the contents of the message.
     - `time_sent`: There needs to be a time value to keep track of when a message is sent.
 

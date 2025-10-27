@@ -1,7 +1,7 @@
 import pool from "../databases/postgres.js";
 
 /* Adding Message to a Consultation Endpoint */
-export const addMessage = async (request, response) => {
+export const addConsultationMessage = async (request, response) => {
     const { userId, consultationId, messageContent } = request.body;
 
     if (userId === undefined || consultationId === undefined || messageContent === undefined) {

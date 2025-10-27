@@ -1,9 +1,9 @@
 import express from "express";
-import { addMessage, getConsultationMessages } from "../controllers/messageController.js";
+import { addConsultationMessage, getConsultationMessages } from "../controllers/messageController.js";
 
 const router = express.Router();
 
-router.post('/api/addMessage', addMessage);
+router.post('/api/addConsultationMessage', addConsultationMessage);
 router.get('/api/getConsultationMessages', getConsultationMessages);
 
 export default router;
