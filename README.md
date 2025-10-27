@@ -376,24 +376,23 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
     My data is structured in relational tables because I want to enforce data integrity, which is vital in healthcare systems. 
 
-- *What fields did you include and why?*
-
     Upon reading the required functionalities around storing and retrieving messages. I identified the key nouns mentioned:
     - consultation
     - messages
     - user
 
-    With these information so far, I have been able to determine 3 entities (i.e. tables) - `consultation`, `message`, and `consult_user`. 
+    Based on this information, I determined 3 entities (i.e. tables) - `consultation`, `message`, and `consult_user`. 
 
-    According to the **Required Functionality**, we must be able to identify who sent the message, and their role in the consultation, because a consultation comprises either a doctor or a patient. With this information, I decided on 3 attributes for the 
+- *What fields did you include and why?*
+
+    According to the **Required Functionality**, we must be able to identify who sent the message, and their role in the consultation, because a consultation comprises both a doctor and a patient. With this information, I decided on 3 attributes for the 
     `consult_user` entity - `user_id`, `user_full_name`, and `user_role`. I believe that having 1 entity is enough instead of splitting out 
     doctor or patient entity, since the `user_role` in the entity will determine whether the person is a Doctor or a Patient.
 
     Given the first **Store Messages Functionality**, I made some assumptions that if we are able to add messages to a consultation, 
     we need to know what consultation we need to add to, therefore we should have the attribute `consultation_id` for `consultation` entity.
 
-    As for the message entity, which is a bit more complicated than the two other entities. I want to mention that the reason why this entity
-    is not `messages` but `message` is because:
+    As for the message entity, I considered its relationship with other entities and thought of the following points:
     - A consultation can have many messages.
     - A message belongs to a consultation.
     - A message is sent by 1 sender (either Patient or Doctor).
@@ -414,7 +413,7 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
 - *What would you index if this were a real database?*
 
-    In my current database, which is only intended for local development purposes and not production code, I did think about why we would index, and if we do index, which column to index, since one of the the challenge statements for the `GET` endpoint was to filter by author role. Indexes are beneficial for performance purposes but if we don't index the right column, it will cost performance way more. Because if we are writing something to the table, say `INSERT` or `UPDATE` statements, and the column that we indexed on is something that gets changed often, then we not only have to update the table rows, but also the indexed column. Therefore making it even slower when we're just trying to READ something.
+    In my current database, which is only intended for local development purposes and not production code, I did think about why we would index, and if we do index, which column to index, since one of the the challenge statements for the `GET` endpoint was to filter by author role. Indexes are beneficial for performance purposes but if we don't index the right column, it will cost performance way more. Because if we are writing something to the table, say `INSERT` or `UPDATE` statements, and the column that we indexed on is something that gets changed often, then we not only have to update the table rows, but also the indexed column. Therefore making it even slower when we're just trying to read something.
 
     And therefore, it's generally better to index on a column that won't be used for writing operations. I chose to index on the `user_id` column of the `message` table, since it's generally good to index foreign keys of a child table (where those keys are primary keys in the parent table), and also because we would have to **retrieve all messages of a consultation with the optional choice of filtering by author role**, we would often have to do `JOIN` statements, by having the index, it will ultimately give us a faster performance.
 
