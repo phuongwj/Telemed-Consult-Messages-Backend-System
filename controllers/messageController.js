@@ -72,6 +72,13 @@ export const getConsultationMessages = async (request, response) => {
         WHERE consultation_id = $1;
     `;
 
+    const getAllMessagesSql = `
+        SELECT * 
+        FROM message
+        JOIN consult_user ON message.user_id = consult_user.user_id
+        WHERE consultation_id = $1;
+    `;
+
     const getAllMessagesByRoleSql = `
         SELECT *
         FROM message
@@ -102,7 +109,10 @@ export const getConsultationMessages = async (request, response) => {
             return response.status(200).send(JSON.stringify(allMessagesByRoleRows));
 
         } else if (consultationRowsLength !== 0) {
-            return response.status(200).send(JSON.stringify(consultationRows));
+            const allMessagesById = await pool.query(getAllMessagesSql, [consultationId]);
+            const allMessagesByIdRows = allMessagesById.rows;
+            
+            return response.status(200).send(JSON.stringify(allMessagesByIdRows));
         } else {
             return response.status(404).send("Error for getting all messages by role. Role doesn't exist.");
         }
