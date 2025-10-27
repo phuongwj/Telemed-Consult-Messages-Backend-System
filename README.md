@@ -87,7 +87,7 @@ Once Docker is installed, make sure you have the Docker Desktop app opened, then
     | 2220187be40e  | telemed-consult-messages-backend-system-database   | "docker-entrypoint.s…"    | 18 seconds ago   | Up 6 seconds | 0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   | preseeded-postgres-db  |
 
 
-    #### Step 5: Stop the Containers
+    #### Step 5: Once finished
 
     If you want to stop running the containers
 
@@ -97,11 +97,22 @@ Once Docker is installed, make sure you have the Docker Desktop app opened, then
 
     ### Option 2: Using `docker-compose.yaml`
 
-    1. Open the fil named `docker-compose.yaml` in your code editor.
+    **Note:** This option will provide the same result as Option 1, but much simpler.
+
+    1. Open the file named `docker-compose.yaml` in your code editor.
     2. Look for **Run All Services** button at the top of the `services:` section.
     3. Click that button to build and start both containers automatically.
 
-    **Note:** This option will provide the same result as Option 1, but much simpler.
+    You should see this at the end in your terminal, indicating that the two containers are up and running.
+
+    ```
+    [+] Running 4/4
+    ✔ db                                   Built                        0.0s 
+    ✔ app                                  Built                        0.0s
+    ✔ Container preseeded-postgres-db      Started                      0.8s 
+    ✔ Container express-app                Started                      0.4s
+    ```
+
 
 ### 3. Couple of Notes for Managing Your Local Database
 
@@ -130,7 +141,7 @@ Alternatively in Docker Desktop, click the **Stop** button for the container nam
 
 **Step 3:** Delete the database volume
 
-This will completely removes the stored database data from your computer.
+This will completely remove the stored database data from your computer.
 
 ```
 docker volume rm telemed-consult-messages-backend-system_postgres-db
@@ -359,6 +370,8 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
 ## Architecture Decisions
 
+### Data Model:
+
 - *How did you structure your data?*
 
     My data is structured in relational tables.
@@ -413,8 +426,9 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
     The tech stack for this backend coding challenge is *Node.js, Express.js, PostgreSQL and Docker*
 
+- *Why this storage approach?*
 
-### Data Model:
+- *What trade-offs did you make given the time limit?*
 
 ## Production Readiness Plan
 

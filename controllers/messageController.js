@@ -4,6 +4,8 @@ import pool from "../databases/postgres.js";
 export const addConsultationMessage = async (request, response) => {
     const { userId, consultationId, messageContent } = request.body;
 
+    response.set('Content-Type', 'application/json');
+
     if (userId === undefined || consultationId === undefined || messageContent === undefined) {
         return response.status(400).send("Missing required field(s) for adding a message.");
     }
@@ -53,6 +55,7 @@ export const addConsultationMessage = async (request, response) => {
     } catch (error) {
         console.error(`Error adding a message: ${error}`);
         
+        response.set('Content-Type', 'application/json');
         return response.status(500).send("Internal Server Error");
     }
 }  
@@ -61,16 +64,11 @@ export const addConsultationMessage = async (request, response) => {
 export const getConsultationMessages = async (request, response) => {
     let { consultationId, authorRole } = request.query;
 
+    response.set('Content-Type', 'application/json');
+
     const getConsultationId = `
         SELECT consultation_id
         FROM consultation
-        WHERE consultation_id = $1;
-    `;
-
-    const getAllMessagesSql = `
-        SELECT * 
-        FROM message
-        JOIN consult_user ON message.user_id = consult_user.user_id
         WHERE consultation_id = $1;
     `;
 
@@ -100,10 +98,7 @@ export const getConsultationMessages = async (request, response) => {
 
             return response.status(200).send(JSON.stringify(allMessagesByRoleRows));
         } else {
-            const allMessagesResult = await pool.query(getAllMessagesSql, [consultationId]);
-            const allMessagesRows = allMessagesResult.rows;
-
-            return response.status(200).send(JSON.stringify(allMessagesRows));
+            return response.status(404).send("Error for getting all messages by role. Role doesn't exist.");
         }
         
     } catch (error) {
