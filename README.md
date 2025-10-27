@@ -374,7 +374,7 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
 - *How did you structure your data?*
 
-    My data is structured in relational tables.
+    My data is structured in relational tables because I want to enforce data integrity, which is vital in healthcare systems. 
 
 - *What fields did you include and why?*
 
@@ -424,11 +424,31 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
 - *Why did you choose this language/framework?*
 
-    The tech stack for this backend coding challenge is *Node.js, Express.js, PostgreSQL and Docker*
+    The tech stack for this backend coding challenge is *Node.js, Express, PostgreSQL and Docker*
+
+    - I chose **Node.js with Express** because I'm most comfortable with JavaScript/Node.js, which meant I could focus on solving the problem 
+    itself rather than struggling with syntax or framework given the time limit. Furthermore, Express is a fast, minimalist web backend 
+    framework for Node.js, it is built on top of Node.js and makes building API endpoints much easier.
 
 - *Why this storage approach?*
 
+    - I went with **PostgreSQL** because it's a relational database, and the challenge's data seem to have clear relationships (consultations -> messages, users -> messages). Initially I wanted to go with SQLite because it doesn't need a server setup, and it's good for the simplicity of this project, but
+    due to the time, I didn't go with SQLite, and went with something I'm more used to. 
+        + Another plus to using PostgreSQL is because of its' ACID compliance, as it is crucial for medical data where you can't afford to lose messages or 
+        have inconsistent data.
+
+    - A add-on I really like for this project is **Docker**, since Docker does all the work of bundling the dependencies of application for you, and you just need to run the containers, then it also works on another person's computer. I really like Docker because of the ease of setup for everybody. And also the fact that developers cloning this wouldn't have to download PostgreSQl and do all the database set up, through running Docker, a PostgreSQL image with pre-seeded data using Docker Volumes will be created, and be ready for local development. So Docker is just really good for local development.
+        + **More about Docker Volumes:** Volumes are persistent data stores for containers, created and managed by Docker. When you create a volume, it's stored within a directory on the Docker host. (references: [Docker Volumes](https://docs.docker.com/engine/storage/volumes/))
+
 - *What trade-offs did you make given the time limit?*
+
+    - **Authentication/Authorization:** I skipped user authentication entirely to focus on the core functionality. In a real medical application, this would be absolutely critical, because you'd need strong authentication (MFA) and strict role-based access control to ensure data security by controlling which authenticated users can perform specific actions and access certain data.
+    - **HIPAA Compliance:** HIPAA's Security Rule requires healthcare organizations to implement technical safeguards like encryption to protect patient data. I wasn't able to work on this, and completely skipped this because of the time limit.
+    - **Input validation:** I implemented basic error handling, but in production, I'd want more comprehensive validation.
+    - **Testing:** I manually tested the endpoints, but didn't write any automated unit or integration tests.
+    - **Seed script:** I used a `seed.sql` script to populate the PostgreSQL image, this is not really recommended 
+    - I did not have a lot of comments in the code to give clearer explanations.
+
 
 ## Production Readiness Plan
 

@@ -88,15 +88,21 @@ export const getConsultationMessages = async (request, response) => {
         } 
         
         const consultationResult = await pool.query(getConsultationId, [consultationId]);
-        if (consultationResult.rows.length === 0) {
-            return response.status(404).send("Error for getting all messages, Consultation ID not found.");
-        }
+        const consultationRows = consultationResult.rows;
+        const consultationRowsLength = consultationRows.length;
+        if (consultationRowsLength === 0) {
 
-        if (authorRole !== undefined && (authorRole === 'Doctor' || authorRole === 'Patient')) {
+            return response.status(404).send("Error for getting all messages, Consultation ID not found.");
+
+        } else if ( (consultationRowsLength !== 0) && (authorRole !== undefined) && (authorRole === 'Doctor' || authorRole === 'Patient') ) {
+
             const allMessagesByRoleResult = await pool.query(getAllMessagesByRoleSql, [consultationId, authorRole]);
             const allMessagesByRoleRows = allMessagesByRoleResult.rows;
 
             return response.status(200).send(JSON.stringify(allMessagesByRoleRows));
+
+        } else if (consultationRowsLength !== 0) {
+            return response.status(200).send(JSON.stringify(consultationRows));
         } else {
             return response.status(404).send("Error for getting all messages by role. Role doesn't exist.");
         }
