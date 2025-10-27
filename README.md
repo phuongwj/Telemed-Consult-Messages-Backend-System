@@ -405,7 +405,7 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 
     And therefore, it's generally better to index on a column that won't be used for writing operations. I chose to index on the `user_id` column of the `message` table, since it's generally good to index foreign keys of a child table (where those keys are primary keys in the parent table), and also because we would have to **retrieve all messages of a consultation with the optional choice of filtering by author role**, we would often have to do `JOIN` statements, by having the index, it will ultimately give us a faster performance.
 
-    And as a response to this question, in a real database, where it is actually much larger than the one intended for this coding challenge, I would index all the foreign keys of a table to retrieve data from the parent tables faster. 
+    And as a response to this question, in a real database, where it is actually much larger than the one intended for this coding challenge, I would index all the foreign keys of a table to retrieve data from the parent tables faster. However, I would also monitor the query performance in production to see if the indexes are causing any overhead to write operations.
 
 ### Technology Choices:
 
