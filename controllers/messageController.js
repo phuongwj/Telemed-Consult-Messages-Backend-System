@@ -108,7 +108,7 @@ export const getConsultationMessages = async (request, response) => {
 
             return response.status(200).send(JSON.stringify(allMessagesByRoleRows));
 
-        } else if (consultationRowsLength !== 0) {
+        } else if (consultationRowsLength !== 0 && (authorRole === undefined)) {
             const allMessagesById = await pool.query(getAllMessagesSql, [consultationId]);
             const allMessagesByIdRows = allMessagesById.rows;
             
