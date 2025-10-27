@@ -32,11 +32,13 @@ cd Telemed-Consult-Messages-Backend-System
 
 **Installation Guide:** https://docs.docker.com/get-started/get-docker/
 
-Once Docker is installed, choose one of the following options to run the project locally:
+Once Docker is installed, make sure you have the Docker Desktop app opened, then choose one of the following options to run the project locally:
 - [Option 1: Using Terminal or Command Line](#option-1-build-and-run-with-docker-compose-using-terminal-or-command-line)
 - [Option 2: Using `docker-compose.yaml`](#option-2-using-docker-composeyaml)
 
     ### Option 1: Build and Run with Docker Compose using Terminal or Command Line
+
+    Make sure that you're in the root directory of the project to run the commands below.
 
     #### Step 1: Verify Docker Installation
     
@@ -56,21 +58,27 @@ Once Docker is installed, choose one of the following options to run the project
 
     #### Step 3: Start the Services
 
-    Launche both services (express server and postgresql database) from the `docker-compose.yaml` file
+    Launch both services (express server and postgresql database) from the `docker-compose.yaml` file
 
     ```
     docker compose up
     ```
 
+    After running the command above, your terminal should look like this, which indicates a success in having the instance
+    of the PostgreSQL database be seeded, as well as up and running. 
+
+    ```
+    ```
+
     #### Step 4: Verify Containers are Running
 
-    Check that both containers (preseeded-postgres-db and express app) started sucessfully.
+    Open a separate terminal to check that both containers (preseeded-postgres-db and express app) started sucessfully.
 
     ```
     docker ps
     ```
 
-    And you should see something quite similar like the following:
+    And you should see something similar to the following:
 
     | CONTAINER ID | IMAGE | COMMAND | CREATED | STATUS| PORTS| NAMES |
     |---------------|----------------------------------------------------|---------------------------|------------------|--------------|-----------------------------------------------|------------------------|
@@ -154,6 +162,8 @@ Consultation 2: Patent 3 and Doctor 1
 
 Please make sure Docker is running before testing the API Enpoints. I personally would prefer testing the API Endpoints with 
 Postman, since it's quite easy to get started with because of their UI, and also because I can see the responses more clearly.
+
+You could install Postman and sign up for an account
 
 This documentation provides the information needed to use the API with any HTTP client (cURL, Postman, etc.). Examples show
 the raw HTTP request format.
@@ -347,6 +357,62 @@ GET http://localhost:8000/api/getConsultationMessages?consultationId=1&authorRol
 ```
 
 ## Architecture Decisions
+
+- *How did you structure your data?*
+
+    My data is structured in relational tables.
+
+- *What fields did you include and why?*
+
+    Upon reading the required functionalities around storing and retrieving messages. I indentified the key nouns mentioned:
+    - consultation
+    - messages
+    - user
+
+    With these information so far, I have been able to determine 3 entities (i.e. tables) - `consultation`, `message`, and `consult_user`.
+
+    According to the **Required Functionality**, we must be able to identify who sent the message, and their role in the consultation
+    because a consultation comprises either a doctor or a patient. With this information, I decided on 3 attributes for the 
+    `consult_user` entity - `user_id`, `user_full_name`, and `user_role`. I believe that having 1 entity is enough instead of splitting out 
+    doctor or patient entity, since the `user_role` in the entity will determine whether the person is a Doctor or a Patient.
+
+    Given the first **Store Messages Functionality**, I made some assumptions that if we are able to add messages to a consultation, 
+    we need to know what consultation we need to add to, therefore we should have the attribute `consultation_id` for `consultation` entity.
+
+    As for the message entity, which is a bit more complicated than the two other entities. I want to mention that the reason why this entity
+    is not `messages` but `message` is because:
+    - A consultation can have many messages.
+    - A message belongs to a consultation.
+    - A message is sent by 1 sender (either Patient or Doctor).
+    - A message is received by 1 receiver (either Patient or Doctor, depending on who sent first).
+
+    Based on that observation, I identified that we need the following attributes for the `message` entity:
+    - `message_id`: This is a primary key, and each message has to have their own unique id as there could be a lot of messages with the same contents.
+    - `consultation.consultation_id`: This is a foreign key from the primary key of the `consultation_id` (More explanation to this is below).
+    - `consult_user.user_id`: The message is associated to a user, therefore it'd be best to have the foreign key from the primary key `consultation_id` here to later identify which of the messages are from Doctor or Patient of a consultation.
+    - `message_content`: If we want to send a message, we obviously want to include the contents of the message.
+    - `time_sent`: There needs to be a time value to keep track of when a message is sent.
+
+- *How did you model the relationship between consultations and messages?*
+
+    I first observed that a message belongs to a consultation, so I was thinking maybe we should have the `message.message_id` as a foreign key inside 
+    the `consultation` table. However, I quickly realized that there could only be unique consultation ids, and that the consultation table would have to store an array of message ids of some sort, which is unsupported in my database and not very practical either, because what if in a consultation, we have hundreds or thousands of messages exchanged, that would cause a lot of issues. Therefore, I came up with a solution for this 
+    one-to-many (consultation to many messages) relationship, that is to go the other way around, we would store the `consultation_id` as a foreign key inside the `message` table, therefore mapping each message to its' own consultation. 
+
+- *What would you index if this were a real database?*
+
+    In my current database, which is only intended for local development purposes and not production code, I did think about why we would index, and if we do index, which column to index, since one of the the challenge statements for the `GET` endpoint was to filter by author role. Indexes are beneficial for performance purposes but if we don't index the right column, it will cost performance way more. Becauase if we are writing something to the table, say `INSERT` or `UPDATE` statements, and the column that we indexed on is something that gets changed often, then we not only have to update the table rows, but also the indexed column. Therefore making it even slower when we're just trying to READ something.
+
+    And therefore, it's generally better to index on a column that won't be used for writing operations. I chose to index on the `user_id` column of the `message` table, since it's generally good to index foreign keys of a child table (where those keys are primary keys in the parent table), and also because we would have to **retrieve all messages of a consultation with the optional choice of filtering by author role**, we would often have to do `JOIN` statements, by having the index, it will ultimately give us a faster performance.
+
+    And as a response to this question, in a real database, where it is actually much larger than the one intended for this coding challenge, I would index all the foreign keys of a table to retrieve data from the parent tables faster. 
+
+### Technology Choices:
+
+- *Why did you choose this language/framework?*
+
+    The tech stack for this backend coding challenge is *Node.js, Express.js, PostgreSQL and Docker*
+
 
 ### Data Model:
 
