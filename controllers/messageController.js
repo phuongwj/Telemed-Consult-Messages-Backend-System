@@ -2,7 +2,7 @@ import pool from "../databases/postgres.js";
 
 /* Adding Message to a Consultation Endpoint */
 export const addConsultationMessage = async (request, response) => {
-    const { userId, consultationId, messageContent } = request.body;
+    const { userId, consultationId, messageContent } = request.body; // Destructuring
 
     response.set('Content-Type', 'application/json');
 
@@ -54,15 +54,14 @@ export const addConsultationMessage = async (request, response) => {
         return response.status(201).send(JSON.stringify(responseObj));
     } catch (error) {
         console.error(`Error adding a message: ${error}`);
-        
-        response.set('Content-Type', 'application/json');
+
         return response.status(500).send("Internal Server Error");
     }
 }  
 
 /* Retrieving All Messages for A Specific Consultation Endpoint */
 export const getConsultationMessages = async (request, response) => {
-    let { consultationId, authorRole } = request.query;
+    let { consultationId, authorRole } = request.query; // Destructuring
 
     response.set('Content-Type', 'application/json');
 
