@@ -122,3 +122,10 @@ export const getConsultationMessages = async (request, response) => {
         return response.status(500).send("Internal Server Error");
     }
 }
+
+/* Deleting a Message that has been sent by a User */
+export const deleteUserMessage = async (request, response) => {
+    let { userId } = request.query;
+
+    response.set('Content-Type', 'application/json');
+}
