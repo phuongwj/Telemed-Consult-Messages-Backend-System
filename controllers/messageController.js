@@ -1,6 +1,11 @@
 import pool from "../databases/postgres.js";
 
-/* Adding Message to a Consultation Endpoint */
+/**
+ * Endpoint to Add Messages to a Consultation
+ * @param {*} request - The request sent by the client-side
+ * @param {*} response - The response to be adjusted by the function and sent
+ * @returns a string representation of the JSON object that shows the message that was added to the consultation
+ */
 export const addConsultationMessage = async (request, response) => {
     const { userId, consultationId, messageContent } = request.body; // Destructuring
 
@@ -59,7 +64,13 @@ export const addConsultationMessage = async (request, response) => {
     }
 }  
 
-/* Retrieving All Messages for A Specific Consultation Endpoint */
+/**
+ * Endpoint to Retrieve All Messages for A Specific Consultation 
+ * 
+ * @param {*} request - The request sent by the client-side
+ * @param {*} response - The response to be adjusted by the function and sent
+ * @returns a string representation of the JSON object that shows a list of messages where each message is an object
+ */
 export const getConsultationMessages = async (request, response) => {
     let { consultationId, authorRole } = request.query; // Destructuring
 
