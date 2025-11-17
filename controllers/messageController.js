@@ -2,6 +2,7 @@ import pool from "../databases/postgres.js";
 
 /**
  * Endpoint to Add Messages to a Consultation
+ * 
  * @param {*} request - The request sent by the client-side
  * @param {*} response - The response to be adjusted by the function and sent
  * @returns a string representation of the JSON object that shows the message that was added to the consultation
@@ -60,7 +61,7 @@ export const addConsultationMessage = async (request, response) => {
     } catch (error) {
         console.error(`Error adding a message: ${error}`);
 
-        return response.status(500).send("Internal Server Error");
+        return response.status(500).send("Unable to add a message. Internal Server Error :(");
     }
 }  
 
@@ -130,13 +131,58 @@ export const getConsultationMessages = async (request, response) => {
     } catch (error) {
         console.error(`Error getting all messages: ${error}`);
 
-        return response.status(500).send("Internal Server Error");
+        return response.status(500).send("Unable to view all messages. Internal Server Error :(");
     }
 }
 
-/* Deleting a Message that has been sent by a User */
+/**
+ * Endpoint to Delete a Specified Message sent by a user
+ * 
+ * @param {*} request - The request sent by the client side
+ * @param {*} response - The response to be adjusted by the function and sent
+ * @returns a string representation of the JSON object that shows a dictionary which represents a message that has been deleted
+ */
 export const deleteUserMessage = async (request, response) => {
-    let { userId } = request.query;
+    let { messageId } = request.query;
 
     response.set('Content-Type', 'application/json');
+
+    if (messageId === undefined) {
+        return response.status(400).send("Missing required messageId field for deleting the message");
+    }
+
+    const getToBeDeletedMessageSql = `
+        SELECT * 
+        FROM message
+        WHERE message_id = $1; 
+    `;
+
+    const deleteMessageSql = `
+        DELETE 
+        FROM message
+        WHERE message_id = $1;
+    `;
+
+    try {
+
+        const toBeDeletedMessageResult = await pool.query(getToBeDeletedMessageSql, [messageId]);
+        const toBeDeletedMessageRow = toBeDeletedMessageResult.rows;
+        const toBeDeletedMessageRowCount = toBeDeletedMessageResult.rowCount;
+
+        if (toBeDeletedMessageRowCount === 1) {
+            const deletedMessageResult = await pool.query(deleteMessageSql, [messageId]);
+            const deletedMessageRowCount = deletedMessageResult.rowCount;
+
+            if (deletedMessageRowCount === 1) {
+                return response.status(200).send(JSON.stringify(toBeDeletedMessageRow));
+            }
+
+            return response.status(404).send("Cannot delete the specified message, messageId doesn't exist");
+        }
+
+    } catch (error) {
+        console.error(`Error deleting user message: ${error}`);
+
+        return response.status(500).send("Unable to delete the message sent. Internal Server Error :(");
+    }
 }

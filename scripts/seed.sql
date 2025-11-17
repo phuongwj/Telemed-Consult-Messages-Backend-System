@@ -10,8 +10,7 @@ CREATE TABLE consult_user (
 
 
 /*
-Query for adding actual users to consult_user table, but waits for 65 seconds
-before adding to see the difference in time sent.
+Query for adding actual users to consult_user table.
 */
 INSERT INTO consult_user (user_full_name, user_role) VALUES
   ('John Smith', 'Doctor'),
