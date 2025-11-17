@@ -3,6 +3,7 @@ import { addConsultationMessage, getConsultationMessages } from "../controllers/
 
 const router = express.Router();
 
+/* Using routers to organize API endpoints */
 router.post('/api/addConsultationMessage', addConsultationMessage);
 router.get('/api/getConsultationMessages', getConsultationMessages);
 
