@@ -137,14 +137,14 @@ docker volume ls
 docker compose down
 ```
 
-Alternatively in Docker Desktop, click the **Stop** button for the container named **telemed-consult-messages-backend-system**.
+Alternatively in Docker Desktop, click the **Stop** button for the container named **backend_postgres-db**.
 
 **Step 3:** Delete the database volume
 
 This will completely remove the stored database data from your computer.
 
 ```
-docker volume rm telemed-consult-messages-backend-system_postgres-db
+docker volume rm backend_postgres-db
 ```
 
 **Step 4:** Rebuild and restart
