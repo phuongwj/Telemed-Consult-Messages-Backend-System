@@ -26,6 +26,7 @@ Download a copy of the project to your computer
 ```bash
 git clone https://github.com/phuongwj/Telemed-Consult-Messages-Backend-System.git
 cd Telemed-Consult-Messages-Backend-System
+cd backend
 ```
 
 ### 2. Install Docker if you don't have it yet
